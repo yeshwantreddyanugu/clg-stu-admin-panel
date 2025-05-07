@@ -1,0 +1,1352 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard - Workshops</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+
+    <style>
+        :root {
+            --primary-color: #3498db;
+            --secondary-color: #2980b9;
+            --admin-color: #1b0741;
+            --light-color: #ecf0f1;
+            --dark-color: #2c3e50;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background-color: #f5f5f5;
+        }
+
+        .dashboard {
+            display: flex;
+            min-height: 100vh;
+        }
+
+        .sidebar {
+            width: 250px;
+            background-color: var(--admin-color);
+            color: white;
+            padding: 20px 0;
+        }
+
+        .sidebar-header {
+            padding: 0 20px 20px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .sidebar-header h2 {
+            display: flex;
+            align-items: center;
+            
+        }
+
+        .sidebar-header h2::before {
+            content: "👑";
+            margin-right: 10px;
+        }
+
+        .sidebar-menu {
+            padding: 20px 0;
+        }
+
+        .menu-item {
+            padding: 12px 20px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+            display: block;
+            color: white;
+            text-decoration: none;
+        }
+
+        .menu-item:hover {
+            background-color: rgba(0, 0, 0, 0.1);
+        }
+
+        .menu-item.active {
+            background-color: rgba(0, 0, 0, 0.2);
+            border-left: 4px solid white;
+        }
+
+        .main-content {
+            flex: 1;
+            padding: 30px;
+        }
+
+        /* Custom styles for workshop page */
+        .add-workshop-btn {
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            transition: background-color 0.3s;
+        }
+
+        .add-workshop-btn:hover {
+            background-color: var(--secondary-color);
+        }
+
+        .search-filter-container {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+        }
+
+        .search-box {
+            flex: 1;
+            min-width: 250px;
+        }
+
+        .date-filter {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+        }
+
+        .table-container {
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            padding: 0;
+            margin-bottom: 30px;
+            border: 1px solid #ddd;
+            overflow: hidden;
+        }
+
+        .table-header {
+            width: 100%;
+            border-collapse: collapse;
+            table-layout: fixed;
+            background-color: #f8f9fa;
+        }
+
+        .table-header th {
+            padding: 10px;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+        }
+
+        .table-body-wrapper {
+            max-height: 320px;
+            overflow-y: auto;
+        }
+
+        .table-body-wrapper table {
+            width: 100%;
+            border-collapse: collapse;
+            table-layout: fixed;
+        }
+
+        .table-body-wrapper td {
+            padding: 10px;
+            border-bottom: 1px solid #ddd;
+        }
+
+
+
+
+
+        .action-btn {
+            padding: 5px 10px;
+            margin: 0 3px;
+            border-radius: 4px;
+            font-size: 14px;
+        }
+
+        .view-btn {
+            background-color: #17a2b8;
+            color: white;
+            border: none;
+        }
+
+        .edit-btn {
+            background-color: #ffc107;
+            color: #212529;
+            border: none;
+        }
+
+        .delete-btn {
+            background-color: #dc3545;
+            color: white;
+            border: none;
+        }
+
+        .modal-image-preview {
+            max-width: 100%;
+            max-height: 200px;
+            margin: 10px 0;
+            border-radius: 5px;
+        }
+
+        .banner-container {
+            margin-top: 30px;
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            padding: 20px;
+        }
+
+        .banner-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 15px;
+            margin-top: 15px;
+        }
+
+        .banner-card {
+            position: relative;
+            border-radius: 5px;
+            overflow: hidden;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        }
+
+        .banner-card img {
+            width: 100%;
+            height: 120px;
+            object-fit: cover;
+        }
+
+        .banner-card .delete-banner {
+            position: absolute;
+            top: 5px;
+            right: 5px;
+            background-color: rgba(220, 53, 69, 0.8);
+            color: white;
+            border: none;
+            border-radius: 50%;
+            width: 25px;
+            height: 25px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+        }
+
+        .form-container {
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            padding: 25px;
+            margin-bottom: 30px;
+        }
+
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: 500;
+        }
+
+        .form-group input,
+        .form-group textarea,
+        .form-group select {
+            width: 100%;
+            padding: 8px 12px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+        }
+
+        .form-group textarea {
+            min-height: 100px;
+        }
+
+        .form-actions {
+            display: flex;
+            justify-content: flex-end;
+            gap: 10px;
+            margin-top: 20px;
+        }
+
+        .btn {
+            padding: 8px 16px;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+
+        .btn-primary {
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+        }
+
+        .btn-secondary {
+            background-color: #6c757d;
+            color: white;
+            border: none;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="dashboard">
+        <div class="sidebar">
+            <div class="sidebar-header">
+                <h2 style="font-size: 24px;">Admin Panel</h2>
+            </div>
+            <div class="sidebar-menu">
+                <a href="admin-dashboard.html" class="menu-item">Home</a>
+                <a href="add-college.html" class="menu-item">Add College</a>
+                <a href="view-colleges.html" class="menu-item">View Colleges</a>
+                <a href="workshop.html" class="menu-item active">Workshop</a>
+                <a href="internships.html" class="menu-item">Internships</a>
+                <a href="hackathon.html" class="menu-item">Hackathon</a>
+                <a href="reviews.html" class="menu-item ">Reviews</a>
+                <a href="ratings.html" class="menu-item ">Ratings</a>
+                <a href="logout.html" class="menu-item">Logout</a>
+            </div>
+        </div>
+        <div class="main-content">
+            <h2>Workshop Management</h2>
+
+            <!-- Add Workshop Button -->
+            <button id="addWorkshopBtn" class="add-workshop-btn">
+                <i class="fas fa-plus"></i> Add Workshop
+            </button>
+
+            <!-- Workshop Form (Initially Hidden) -->
+            <div id="workshopFormContainer" class="form-container" style="display: none;">
+                <h3 id="formTitle">Add New Workshop</h3>
+                <form id="workshopForm">
+                    <input type="hidden" id="workshopId">
+                    <div class="form-group">
+                        <label for="title">Title</label>
+                        <input type="text" id="title" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="description">Description</label>
+                        <textarea id="description" required></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label for="conductor">Conductor</label>
+                        <input type="text" id="conductor" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="location">Location</label>
+                        <input type="text" id="location" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="phone_number">Phone Number</label>
+                        <input type="tel" id="phone_number" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="price">Price</label>
+                        <input type="number" id="price" step="0.01" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="timings">Timings</label>
+                        <input type="text" id="timings" placeholder="e.g., 10:00 - 16:00" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="startDate">Start Date & Time</label>
+                        <input type="datetime-local" id="startDate" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="endDate">End Date & Time</label>
+                        <input type="datetime-local" id="endDate" required>
+                    </div>
+                    <div class="form-actions">
+                        <button type="button" id="cancelWorkshopBtn" class="btn btn-secondary">Cancel</button>
+                        <button type="submit" class="btn btn-primary">Save</button>
+                    </div>
+                </form>
+            </div>
+
+            <!-- Search and Filter Section -->
+            <div class="search-filter-container">
+                <div class="search-box">
+                    <input type="text" id="searchInput" class="form-control" placeholder="Search workshops...">
+                </div>
+                <div class="date-filter">
+                    <input type="date" id="startDateFilter" class="form-control" placeholder="From Date">
+                    <span>to</span>
+                    <input type="date" id="endDateFilter" class="form-control" placeholder="To Date">
+                    <button id="applyFilterBtn" class="btn btn-primary">Apply</button>
+                    <button id="resetFilterBtn" class="btn btn-secondary">Reset</button>
+                </div>
+            </div>
+
+            <!-- Workshops Table -->
+            <div class="table-container">
+                <table class="table-header">
+                    <thead>
+                        <tr>
+                            <th>Title</th>
+                            <th>Conductor</th>
+                            <th>Location</th>
+                            <th>Participants</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                </table>
+                <div class="table-body-wrapper">
+                    <table class="table table-striped table-hover">
+                        <tbody id="workshopsTableBody">
+                            <!-- Rows will be injected here -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+
+
+
+            <!-- Workshop Banners Section -->
+            <div class="banner-container">
+                <h3>Workshop Banners</h3>
+                <button id="addBannerBtn" class="btn btn-primary">
+                    <i class="fas fa-plus"></i> Add Banner Images
+                </button>
+                <input type="file" id="bannerUpload" multiple accept="image/*" style="display: none;">
+                <div class="banner-grid" id="bannerGrid">
+                    <!-- Banners will be loaded here -->
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- View Workshop Modal -->
+    <div class="modal fade" id="viewWorkshopModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="viewWorkshopModalTitle">Workshop Details</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body" id="viewWorkshopModalBody">
+                    <!-- Workshop details will be loaded here -->
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- View Workshop Forms Modal -->
+    <div class="modal fade" id="viewWorkshopFormsModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-xl">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Workshop Registrations</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <table class="table table-striped">
+                        <thead>
+                            <tr>
+                                <th>Name</th>
+                                <th>Email</th>
+                                <th>Phone</th>
+                                <th>Registration Date</th>
+                            </tr>
+                        </thead>
+                        <tbody id="workshopFormsTableBody">
+                            <!-- Workshop forms will be loaded here -->
+                        </tbody>
+                    </table>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- JavaScript Libraries -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            // Initialize date pickers
+            flatpickr("#startDate", {
+                enableTime: true,
+                dateFormat: "Y-m-d H:i",
+            });
+            flatpickr("#endDate", {
+                enableTime: true,
+                dateFormat: "Y-m-d H:i",
+            });
+
+            // DOM Elements
+            const addWorkshopBtn = document.getElementById('addWorkshopBtn');
+            const workshopFormContainer = document.getElementById('workshopFormContainer');
+            const workshopForm = document.getElementById('workshopForm');
+            const cancelWorkshopBtn = document.getElementById('cancelWorkshopBtn');
+            const searchInput = document.getElementById('searchInput');
+            const startDateFilter = document.getElementById('startDateFilter');
+            const endDateFilter = document.getElementById('endDateFilter');
+            const applyFilterBtn = document.getElementById('applyFilterBtn');
+            const resetFilterBtn = document.getElementById('resetFilterBtn');
+            const workshopsTableBody = document.getElementById('workshopsTableBody');
+            const addBannerBtn = document.getElementById('addBannerBtn');
+            const bannerUpload = document.getElementById('bannerUpload');
+            const bannerGrid = document.getElementById('bannerGrid');
+            const viewWorkshopModal = new bootstrap.Modal(document.getElementById('viewWorkshopModal'));
+            const viewWorkshopFormsModal = new bootstrap.Modal(document.getElementById('viewWorkshopFormsModal'));
+
+            // Variables
+            let workshops = [];
+            let banners = [];
+            let isEditMode = false;
+            let currentWorkshopId = null;
+
+            // Event Listeners
+            addWorkshopBtn.addEventListener('click', showWorkshopForm);
+            cancelWorkshopBtn.addEventListener('click', hideWorkshopForm);
+            workshopForm.addEventListener('submit', handleWorkshopSubmit);
+            searchInput.addEventListener('input', filterWorkshops);
+            applyFilterBtn.addEventListener('click', filterWorkshops);
+            resetFilterBtn.addEventListener('click', resetFilters);
+            addBannerBtn.addEventListener('click', () => bannerUpload.click());
+            bannerUpload.addEventListener('change', uploadBanners);
+
+            // Initial Load
+            loadWorkshops();
+            loadBanners();
+            // Functions
+            function showWorkshopForm() {
+                document.getElementById('formTitle').textContent = 'Add New Workshop';
+                workshopForm.reset();
+                workshopFormContainer.style.display = 'block';
+                isEditMode = false;
+                currentWorkshopId = null;
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+            }
+
+            function showEditWorkshopForm(workshop) {
+                document.getElementById('formTitle').textContent = 'Edit Workshop';
+                document.getElementById('workshopId').value = workshop.id;
+                document.getElementById('title').value = workshop.title;
+                document.getElementById('description').value = workshop.description;
+                document.getElementById('conductor').value = workshop.conductor;
+                document.getElementById('location').value = workshop.location;
+                document.getElementById('phone_number').value = workshop.phone_number;
+                document.getElementById('price').value = workshop.price;
+                document.getElementById('timings').value = workshop.timings;
+
+                // Format dates for datetime-local input
+                document.getElementById('startDate').value = formatDateTimeForInput(workshop.startDate);
+                document.getElementById('endDate').value = formatDateTimeForInput(workshop.endDate);
+
+                workshopFormContainer.style.display = 'block';
+                isEditMode = true;
+                currentWorkshopId = workshop.id;
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+            }
+
+
+
+            // Update your date formatting functions
+            function formatDateTimeForInput(dateTimeString) {
+                // Convert backend format "2025-05-05T10:00:00" to datetime-local format "YYYY-MM-DDTHH:MM"
+                if (typeof dateTimeString === 'string') {
+                    return dateTimeString.substring(0, 16); // Truncate seconds
+                }
+                // If it's a Date object
+                return dateTimeString.toISOString().substring(0, 16);
+            }
+
+            function formatDateTimeForAPI(dateTimeString) {
+                // Convert from datetime-local "YYYY-MM-DDTHH:MM" to backend format "YYYY-MM-DDTHH:MM:00"
+                return dateTimeString + ':00';
+            }
+
+            function hideWorkshopForm() {
+                workshopFormContainer.style.display = 'none';
+            }
+
+
+
+            // Update your handleWorkshopSubmit function
+            async function handleWorkshopSubmit(e) {
+                e.preventDefault();
+
+                // Create the workshop data object
+                const workshopData = {
+                    title: document.getElementById('title').value,
+                    description: document.getElementById('description').value,
+                    conductor: document.getElementById('conductor').value,
+                    location: document.getElementById('location').value,
+                    phone_number: document.getElementById('phone_number').value,
+                    price: parseFloat(document.getElementById('price').value),
+                    timings: document.getElementById('timings').value,
+                    startDate: formatDateTimeForAPI(document.getElementById('startDate').value),
+                    endDate: formatDateTimeForAPI(document.getElementById('endDate').value)
+                };
+
+                console.log('Submitting workshop data:', JSON.stringify(workshopData, null, 2));
+
+                try {
+                    const url = isEditMode
+                        ? `https://3b43-2401-4900-1c27-7d2d-b8d0-58aa-1201-526c.ngrok-free.app/api/admin/workshops/update_workshop/${currentWorkshopId}`
+                        : 'https://3b43-2401-4900-1c27-7d2d-b8d0-58aa-1201-526c.ngrok-free.app/api/admin/workshops/save/workshop';
+
+                    const method = isEditMode ? 'PUT' : 'POST';
+
+                    const response = await fetch(url, {
+                        method: method,
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'Accept': 'application/json'
+                        },
+                        body: JSON.stringify(workshopData)
+                    });
+
+                    // Check for HTML response (error case)
+                    const contentType = response.headers.get('content-type');
+                    if (contentType && contentType.includes('text/html')) {
+                        const html = await response.text();
+                        console.error('Server returned HTML error:', html);
+                        throw new Error('Server returned an HTML error page');
+                    }
+
+                    if (!response.ok) {
+                        // Try to parse JSON error response
+                        const errorData = await response.json().catch(() => ({}));
+                        console.error('Error response:', errorData);
+                        throw new Error(errorData.message || `HTTP error! status: ${response.status}`);
+                    }
+
+                    const result = await response.json();
+                    console.log('Success:', result);
+
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'Success!',
+                        text: `Workshop ${isEditMode ? 'updated' : 'created'} successfully.`
+                    });
+
+                    hideWorkshopForm();
+                    loadWorkshops();
+                } catch (error) {
+                    console.error('Error saving workshop:', error);
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Error',
+                        text: error.message || 'An error occurred while saving the workshop'
+                    });
+                }
+            }
+
+
+
+
+            //Load WorkShop Table 
+            // Load and Display Workshops
+            async function loadWorkshops() {
+                try {
+                    console.log('Attempting to fetch workshops...');
+
+                    const response = await fetch('https://3b43-2401-4900-1c27-7d2d-b8d0-58aa-1201-526c.ngrok-free.app/api/admin/workshops/all/workshops', {
+                        headers: {
+                            'Accept': 'application/json',
+                            'Content-Type': 'application/json',
+                            'ngrok-skip-browser-warning': 'true',
+                            'Authorization': 'Bearer YOUR_AUTH_TOKEN',
+                        }
+                    });
+
+                    console.log('Response status:', response.status);
+
+                    if (!response.ok) {
+                        const errorText = await response.text();
+                        console.error('Error response:', errorText);
+                        throw new Error(`Failed to load workshops: ${response.status} ${response.statusText}`);
+                    }
+
+                    const contentType = response.headers.get('content-type');
+                    if (!contentType || !contentType.includes('application/json')) {
+                        const responseData = await response.text();
+                        console.error('Non-JSON response:', responseData);
+                        throw new Error('Server did not return JSON');
+                    }
+
+                    workshops = await response.json();
+                    console.log('Workshops data received:', workshops);
+
+                    if (!Array.isArray(workshops)) {
+                        console.error('Expected array but got:', typeof workshops);
+                        throw new Error('Invalid data format - expected array');
+                    }
+
+                    renderWorkshopsTable(workshops);
+                } catch (error) {
+                    console.error('Error loading workshops:', error);
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Error loading workshops',
+                        text: error.message,
+                        footer: 'Please check console for more details'
+                    });
+                }
+            }
+
+            // Render Workshops Table with enhanced error handling
+            function renderWorkshopsTable(workshops) {
+                const tableBody = document.getElementById('workshopsTableBody');
+
+                try {
+                    // Clear existing table
+                    tableBody.innerHTML = '';
+
+                    if (!workshops || workshops.length === 0) {
+                        tableBody.innerHTML = `
+                <tr>
+                    <td colspan="5" class="text-center">No workshops found</td>
+                </tr>
+            `;
+                        return;
+                    }
+
+                    // Create table rows
+                    workshops.forEach(workshop => {
+                        try {
+                            const row = document.createElement('tr');
+
+                            // Safely access properties with fallbacks
+                            row.innerHTML = `
+                    <td>${workshop.title || 'N/A'}</td>
+                    <td>${workshop.conductor || 'N/A'}</td>
+                    <td>${workshop.location || 'N/A'}</td>
+                    <td>${workshop.count || 0}</td>
+                    <td>
+                        <button class="action-btn view-btn" data-id="${workshop.id}">
+                            <i class="fas fa-eye"></i>
+                        </button>
+                        <button class="action-btn edit-btn" data-id="${workshop.id}">
+                            <i class="fas fa-edit"></i>
+                        </button>
+                        <button class="action-btn delete-btn" data-id="${workshop.id}">
+                            <i class="fas fa-trash"></i>
+                        </button>
+                    </td>
+                `;
+
+                            tableBody.appendChild(row);
+                        } catch (rowError) {
+                            console.error('Error rendering workshop row:', workshop, rowError);
+                        }
+                    });
+
+                    // Add event listeners to action buttons
+                    addWorkshopActionListeners();
+
+                } catch (error) {
+                    console.error('Error rendering workshops table:', error);
+                    tableBody.innerHTML = `
+            <tr>
+                <td colspan="5" class="text-center text-danger">
+                    Error displaying workshops. Check console for details.
+                </td>
+            </tr>
+        `;
+                }
+            }
+
+            // Add event listeners to workshop action buttons
+            function addWorkshopActionListeners() {
+
+
+                document.querySelectorAll('.view-btn').forEach(btn => {
+                    btn.addEventListener('click', () => {
+                        const workshopId = btn.dataset.id;
+                        if (!workshopId) return;
+
+                        // Use pre-loaded data instead of fetching
+                        viewWorkshop(workshopId);
+                    });
+                });
+
+
+                document.querySelectorAll('.edit-btn').forEach(btn => {
+                    btn.addEventListener('click', () => {
+                        const workshopId = btn.dataset.id;
+                        const workshop = workshops.find(w => w.id == workshopId);
+                        if (workshop) showEditWorkshopForm(workshop);
+                    });
+                });
+
+                document.querySelectorAll('.delete-btn').forEach(btn => {
+                    btn.addEventListener('click', () => {
+                        const workshopId = btn.dataset.id;
+                        deleteWorkshop(workshopId);
+                    });
+                });
+            }
+
+
+
+
+
+            // View Function for Specific Workshop (using pre-loaded data)
+            async function viewWorkshop(id) {
+                // Convert ID and validate
+                const idStr = String(id).trim();
+                console.log('[viewWorkshop] Starting with workshop ID:', idStr);
+
+                if (!/^\d+$/.test(idStr)) {
+                    console.error('[viewWorkshop] Invalid ID format:', idStr);
+                    Swal.fire('Invalid ID', 'The workshop ID must be a numeric value', 'error');
+                    return;
+                }
+
+                // Find workshop in pre-loaded data
+                const workshop = workshops.find(w => String(w.id) === idStr);
+                if (!workshop) {
+                    console.error('[viewWorkshop] Workshop not found in local data. Available IDs:', workshops.map(w => w.id));
+                    Swal.fire('Not Found', 'Workshop not found in local data', 'error');
+                    return;
+                }
+                console.log('[viewWorkshop] Found workshop:', workshop);
+
+                try {
+                    // Only fetch registrations (since they might change frequently)
+                    let forms = [];
+                    let registrationCount = workshop.count || 0;
+
+                    try {
+                        const baseUrl = 'https://3b43-2401-4900-1c27-7d2d-b8d0-58aa-1201-526c.ngrok-free.app';
+                        const registrationsUrl = `${baseUrl}/api/admin/workshops/workshop/forms/${idStr}`;
+
+                        console.log('[viewWorkshop] Fetching registrations from:', registrationsUrl);
+
+                        const headers = {
+                            'Accept': 'application/json',
+                            'Authorization': `Bearer ${localStorage.getItem('authToken') || ''}`,
+                            'ngrok-skip-browser-warning': 'true' // Add this if needed
+                        };
+                        console.log('[viewWorkshop] Request headers:', headers);
+
+                        const startTime = performance.now();
+                        const formsResponse = await Promise.race([
+                            fetch(registrationsUrl, { headers }),
+                            new Promise((_, reject) =>
+                                setTimeout(() => reject(new Error('Registration request timeout after 5s')), 5000)
+                            )
+                        ]);
+                        const fetchTime = performance.now() - startTime;
+
+                        console.log(`[viewWorkshop] Registration response received in ${fetchTime.toFixed(2)}ms`);
+                        console.log('[viewWorkshop] Response status:', formsResponse.status, formsResponse.statusText);
+                        console.log('[viewWorkshop] Response headers:', Array.from(formsResponse.headers.entries()));
+
+                        // Check for non-2xx status codes
+                        if (!formsResponse.ok) {
+                            const errorText = await formsResponse.text();
+                            console.error('[viewWorkshop] Non-OK response:', {
+                                status: formsResponse.status,
+                                statusText: formsResponse.statusText,
+                                body: errorText
+                            });
+                            throw new Error(`Server responded with ${formsResponse.status}: ${formsResponse.statusText}`);
+                        }
+
+                        const contentType = formsResponse.headers.get('content-type');
+                        console.log('[viewWorkshop] Content-Type:', contentType);
+
+                        if (!contentType || !contentType.includes('application/json')) {
+                            const text = await formsResponse.text();
+                            console.error('[viewWorkshop] Unexpected content type. Response text:', text);
+                            throw new Error(`Expected JSON but got ${contentType || 'unknown type'}`);
+                        }
+
+                        forms = await formsResponse.json();
+                        console.log('[viewWorkshop] Registration data received:', forms);
+
+                        if (!Array.isArray(forms)) {
+                            console.warn('[viewWorkshop] Registration data is not an array. Received:', typeof forms);
+                            forms = [];
+                        }
+
+                        // Update registration count with actual fetched data
+                        registrationCount = forms.length;
+                        console.log(`[viewWorkshop] Successfully loaded ${registrationCount} registrations`);
+
+                    } catch (fetchError) {
+                        console.error('[viewWorkshop] Registration fetch failed:', {
+                            error: fetchError,
+                            message: fetchError.message,
+                            stack: fetchError.stack
+                        });
+
+                        forms = []; // Fallback to empty array
+                        registrationCount = workshop.count || 0; // Use count from workshop data if fetch fails
+
+                        // Only show error if not 404 (not found is acceptable)
+                        if (!fetchError.message.includes('404')) {
+                            console.warn('[viewWorkshop] Showing error to user about registration fetch');
+                            await Swal.fire({
+                                icon: 'warning',
+                                title: 'Registration Data',
+                                text: 'Could not load registration details',
+                                timer: 2000
+                            });
+                        }
+                    }
+
+                    // Display workshop data
+                    console.log('[viewWorkshop] Rendering workshop details in modal');
+                    document.getElementById('viewWorkshopModalTitle').textContent = workshop.title || 'Workshop Details';
+                    document.getElementById('viewWorkshopModalBody').innerHTML = `
+            <div class="row">
+                <div class="col-md-6">
+                    <p><strong>Description:</strong> ${workshop.description || 'Not provided'}</p>
+                    <p><strong>Conductor:</strong> ${workshop.conductor || 'Not specified'}</p>
+                    <p><strong>Location:</strong> ${workshop.location || 'Virtual'}</p>
+                    <p><strong>Contact:</strong> ${workshop.phone_number || 'N/A'}</p>
+                </div>
+                <div class="col-md-6">
+                    <p><strong>Price:</strong> ${workshop.price ? '$' + parseFloat(workshop.price).toFixed(2) : 'Free'}</p>
+                    <p><strong>Schedule:</strong> ${workshop.timings || 'To be announced'}</p>
+                    <p><strong>Starts:</strong> ${formatDate(workshop.startDate) || 'TBD'}</p>
+                    <p><strong>Ends:</strong> ${formatDate(workshop.endDate) || 'TBD'}</p>
+                </div>
+            </div>
+            <div class="mt-4">
+                <button class="btn btn-primary w-100" id="viewRegistrationsBtn">
+                    View Registrations (${registrationCount})
+                </button>
+            </div>
+            ${forms.length === 0 ? '<div class="alert alert-info mt-3">No registration data available</div>' : ''}
+        `;
+
+                    // Add registration button handler
+                    const viewRegistrationsBtn = document.getElementById('viewRegistrationsBtn');
+                    if (viewRegistrationsBtn) {
+                        // Remove any existing listeners to prevent duplicates
+                        viewRegistrationsBtn.replaceWith(viewRegistrationsBtn.cloneNode(true));
+                        document.getElementById('viewRegistrationsBtn').addEventListener('click', () => {
+                            console.log('[viewWorkshop] View registrations button clicked for workshop:', workshop.id);
+                            viewWorkshopModal.hide();
+                            showWorkshopRegistrations(workshop.id, forms);
+                        });
+                    } else {
+                        console.error('[viewWorkshop] View registrations button not found');
+                    }
+
+                    viewWorkshopModal.show();
+                    console.log('[viewWorkshop] Modal shown successfully');
+
+                } catch (error) {
+                    console.error('[viewWorkshop] Error in viewWorkshop:', {
+                        error: error,
+                        message: error.message,
+                        stack: error.stack,
+                        workshopId: idStr
+                    });
+
+                    await Swal.fire({
+                        icon: 'error',
+                        title: 'Error',
+                        html: `Failed to load workshop details: <strong>${error.message}</strong>`,
+                        footer: `Workshop ID: ${idStr}`
+                    });
+                }
+            }
+
+            // Date formatting helper
+            function formatDate(dateString) {
+                if (!dateString) return null;
+                try {
+                    const date = new Date(dateString);
+                    return date.toLocaleDateString() + ' ' + date.toLocaleTimeString([], {
+                        hour: '2-digit',
+                        minute: '2-digit'
+                    });
+                } catch {
+                    return dateString; // Return raw string if parsing fails
+                }
+            }
+
+            // Registration display function with enhanced error handling
+            function showWorkshopRegistrations(workshopId, forms) {
+                try {
+                    console.log(`Displaying registrations for workshop ${workshopId}`, forms);
+
+                    const tableBody = document.getElementById('workshopFormsTableBody');
+                    if (!tableBody) {
+                        throw new Error('Registration table body element not found');
+                    }
+
+                    // Clear existing content
+                    tableBody.innerHTML = '';
+
+                    // Validate forms data
+                    if (!Array.isArray(forms)) {
+                        console.error('Invalid forms data format - expected array:', forms);
+                        forms = []; // Reset to empty array
+                    }
+
+                    if (forms.length === 0) {
+                        tableBody.innerHTML = `
+                <tr>
+                    <td colspan="4" class="text-center text-muted">
+                        No registrations found for this workshop
+                    </td>
+                </tr>
+            `;
+                    } else {
+                        forms.forEach((form, index) => {
+                            try {
+                                if (!form || typeof form !== 'object') {
+                                    console.warn(`Invalid registration at index ${index}:`, form);
+                                    return;
+                                }
+
+                                const row = document.createElement('tr');
+
+                                // Safely extract values with fallbacks
+                                const name = form.name || 'N/A';
+                                const email = form.email || 'N/A';
+                                const phone = form.phone || 'N/A';
+                                let createdAt = 'N/A';
+
+                                try {
+                                    createdAt = form.createdAt ?
+                                        new Date(form.createdAt).toLocaleString() :
+                                        'N/A';
+                                } catch (dateError) {
+                                    console.warn('Error parsing date:', form.createdAt, dateError);
+                                    createdAt = 'Invalid date';
+                                }
+
+                                row.innerHTML = `
+                        <td>${escapeHtml(name)}</td>
+                        <td>${escapeHtml(email)}</td>
+                        <td>${escapeHtml(phone)}</td>
+                        <td>${createdAt}</td>
+                    `;
+
+                                tableBody.appendChild(row);
+                            } catch (rowError) {
+                                console.error(`Error rendering registration row ${index}:`, rowError, form);
+                            }
+                        });
+                    }
+
+                    // Update modal title with count
+                    const modalTitle = document.getElementById('workshopFormsModalTitle');
+                    if (modalTitle) {
+                        modalTitle.textContent = `Registrations (${forms.length})`;
+                    } else {
+                        console.warn('Modal title element not found');
+                    }
+
+                    // Show modal
+                    if (viewWorkshopFormsModal && typeof viewWorkshopFormsModal.show === 'function') {
+                        viewWorkshopFormsModal.show();
+                    } else {
+                        console.error('Modal instance not available');
+                        throw new Error('Could not display registration modal');
+                    }
+
+                    console.log('Registrations displayed successfully');
+
+                } catch (error) {
+                    console.error('Error in showWorkshopRegistrations:', {
+                        error: error,
+                        workshopId: workshopId,
+                        formsData: forms
+                    });
+
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Display Error',
+                        html: `
+                <div class="text-start">
+                    <p>Failed to display registrations</p>
+                    <div class="alert alert-light small mt-2">
+                        ${error.message}<br>
+                        Workshop ID: ${workshopId}
+                    </div>
+                </div>
+            `,
+                        footer: 'Check console for details'
+                    });
+                }
+            }
+
+            // Basic HTML escaping for security
+            function escapeHtml(unsafe) {
+                if (typeof unsafe !== 'string') return unsafe;
+                return unsafe
+                    .replace(/&/g, "&amp;")
+                    .replace(/</g, "&lt;")
+                    .replace(/>/g, "&gt;")
+                    .replace(/"/g, "&quot;")
+                    .replace(/'/g, "&#039;");
+            }
+
+            // Edit workshop function
+            async function editWorkshop(id) {
+                const workshop = workshops.find(w => w.id == id);
+                if (workshop) {
+                    showEditWorkshopForm(workshop);
+                }
+            }
+
+            //Delete workshop ID
+            async function deleteWorkshop(id) {
+                const result = await Swal.fire({
+                    title: 'Are you sure?',
+                    text: "You won't be able to revert this!",
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonColor: '#3085d6',
+                    cancelButtonColor: '#d33',
+                    confirmButtonText: 'Yes, delete it!'
+                });
+
+                if (result.isConfirmed) {
+                    try {
+                        const response = await fetch(`https://3b43-2401-4900-1c27-7d2d-b8d0-58aa-1201-526c.ngrok-free.app/api/admin/workshops/delete/${id}`, {
+                            method: 'DELETE'
+                        });
+
+                        if (!response.ok) {
+                            throw new Error('Failed to delete workshop');
+                        }
+
+                        Swal.fire(
+                            'Deleted!',
+                            'The workshop has been deleted.',
+                            'success'
+                        );
+                        loadWorkshops();
+                    } catch (error) {
+                        console.error('Error deleting workshop:', error);
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Error',
+                            text: error.message
+                        });
+                    }
+                }
+            }
+
+            function filterWorkshops() {
+                const searchTerm = searchInput.value.toLowerCase();
+                const startDate = startDateFilter.value;
+                const endDate = endDateFilter.value;
+
+                let filtered = [...workshops];
+
+                if (searchTerm) {
+                    filtered = filtered.filter(workshop =>
+                        workshop.title.toLowerCase().includes(searchTerm) ||
+                        workshop.conductor.toLowerCase().includes(searchTerm) ||
+                        workshop.location.toLowerCase().includes(searchTerm)
+                    );
+                }
+
+                if (startDate) {
+                    const start = new Date(startDate);
+                    filtered = filtered.filter(workshop => new Date(workshop.startDate) >= start);
+                }
+
+                if (endDate) {
+                    const end = new Date(endDate);
+                    filtered = filtered.filter(workshop => new Date(workshop.endDate) <= end);
+                }
+
+                renderWorkshopsTable(filtered);
+            }
+
+            function resetFilters() {
+                searchInput.value = '';
+                startDateFilter.value = '';
+                endDateFilter.value = '';
+                renderWorkshopsTable(workshops);
+            }
+
+
+
+
+
+
+
+
+            // Load Banners
+            async function loadBanners() {
+                try {
+                    console.log('Fetching banners...');
+
+                    const response = await fetch('https://3b43-2401-4900-1c27-7d2d-b8d0-58aa-1201-526c.ngrok-free.app/api/admin/workshops/get/workshop_banners', {
+                        method: 'GET',
+                        headers: {
+                            'Accept': 'application/json',
+                            'Content-Type': 'application/json',
+                            // 'Authorization': 'Bearer your-token-here' // Uncomment if needed
+                        },
+                        mode: 'cors',
+                        credentials: 'include'
+                    });
+
+                    console.log('Status:', response.status);
+                    console.log('Content-Type:', response.headers.get('content-type'));
+
+                    if (!response.ok) {
+                        throw new Error(`HTTP error! status: ${response.status}`);
+                    }
+
+                    const contentType = response.headers.get('content-type');
+                    if (!contentType || !contentType.includes('application/json')) {
+                        const text = await response.text();
+                        console.error('Expected JSON but got:', contentType, '\nResponse:', text);
+                        throw new Error(`Expected JSON but received ${contentType}`);
+                    }
+
+                    const data = await response.json();
+                    console.log('API Response:', data); // Log the full response
+
+                    // Extract banners from the response (assuming data.urls contains the array)
+                    if (data.urls && Array.isArray(data.urls)) {
+                        banners = data.urls; // Use the nested array
+                        renderBanners();
+                    } else {
+                        throw new Error('Expected "urls" array in response');
+                    }
+                } catch (error) {
+                    console.error('Error loading banners:', error);
+                    bannerGrid.innerHTML = '<p class="text-danger">Failed to load banners: ' + error.message + '</p>';
+                }
+            }
+
+
+
+            // Render Banners
+            function renderBanners() {
+                bannerGrid.innerHTML = '';
+
+                if (!banners || banners.length === 0) {
+                    bannerGrid.innerHTML = '<p>No banners uploaded yet.</p>';
+                    return;
+                }
+
+                banners.forEach((banner, index) => {
+                    if (!banner.imageUrls) {
+                        console.warn(`Banner at index ${index} is missing a "url" field:`, banner);
+                        return;
+                    }
+
+                    const bannerCard = document.createElement('div');
+                    bannerCard.className = 'banner-card';
+                    bannerCard.innerHTML = `
+            <img src="${banner.imageUrls}" alt="Workshop Banner" class="img-fluid">
+            <button class="delete-banner btn btn-sm btn-danger mt-2" data-index="${index}">
+                <i class="fas fa-times"></i> Delete
+            </button>
+        `;
+                    bannerGrid.appendChild(bannerCard);
+                });
+
+                // Attach delete listeners
+                document.querySelectorAll('.delete-banner').forEach(btn => {
+                    btn.addEventListener('click', () => {
+                        const index = btn.dataset.index;
+                        deleteBanner(index);
+                    });
+                });
+            }
+
+
+
+
+
+
+            // Upload Banner Image
+            async function uploadBanners(e) {
+                const files = e.target.files;
+                if (files.length === 0) {
+                    console.warn('No files selected');
+                    return;
+                }
+
+                try {
+                    const formData = new FormData();
+                    for (let i = 0; i < files.length; i++) {
+                        console.log(`Appending file: ${files[i].name}`);
+                        formData.append('files', files[i]); // backend must support multiple files under same key
+                    }
+
+                    console.log('Sending banner upload request...');
+                    const response = await fetch('https://3b43-2401-4900-1c27-7d2d-b8d0-58aa-1201-526c.ngrok-free.app/api/admin/workshops/save/workshop_banner', {
+                        method: 'POST',
+                        body: formData,
+                    });
+
+                    console.log('Response status:', response.status);
+                    const contentType = response.headers.get('content-type');
+                    const result = contentType && contentType.includes('application/json') ? await response.json() : await response.text();
+
+                    if (!response.ok) {
+                        console.error('Upload failed response:', result);
+                        throw new Error('Failed to upload banners');
+                    }
+
+                    console.log('Banners uploaded successfully:', result);
+                    alert("banner images uploaded successfully");
+                    loadBanners(); // refresh banner list
+                    bannerUpload.value = ''; // clear input
+                } catch (error) {
+                    console.error('Error uploading banners:', error);
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Upload Error',
+                        text: error.message
+                    });
+                }
+            }
+
+
+
+            //Delete Banner Images
+            async function deleteBanner(index) {
+                try {
+                    const banner = banners[index];
+                    const response = await fetch(`https://3b43-2401-4900-1c27-7d2d-b8d0-58aa-1201-526c.ngrok-free.app/api/admin/workshops/delete_banner/${banner.id}`, {
+                        method: 'DELETE'
+                    });
+
+                    if (!response.ok) {
+                        throw new Error('Failed to delete banner');
+                    }
+
+                    loadBanners();
+                } catch (error) {
+                    console.error('Error deleting banner:', error);
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Error',
+                        text: error.message
+                    });
+                }
+            }
+        });
+    </script>
+</body>
+
+</html>

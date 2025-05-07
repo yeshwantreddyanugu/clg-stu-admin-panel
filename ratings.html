@@ -1,0 +1,592 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard - Ratings</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        :root {
+            --primary-color: #123146;
+            --secondary-color: #0d2f45;
+            --admin-color: #1b0741;
+            --light-color: #ecf0f1;
+            --dark-color: #2c3e50;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background-color: #f5f5f5;
+        }
+
+        .dashboard {
+            display: flex;
+            min-height: 100vh;
+        }
+
+        .sidebar {
+            width: 250px;
+            background-color: var(--admin-color);
+            color: white;
+            padding: 20px 0;
+            position: fixed;
+            height: 100%;
+        }
+
+        .sidebar-header {
+            padding: 0 20px 20px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .sidebar-header h2 {
+            display: flex;
+            align-items: center;
+        }
+
+        .sidebar-header h2::before {
+            content: "👑";
+            margin-right: 10px;
+        }
+
+        .sidebar-menu {
+            padding: 20px 0;
+        }
+
+        .menu-item {
+            padding: 12px 20px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+            display: block;
+            color: white;
+            text-decoration: none;
+        }
+
+        .menu-item:hover {
+            background-color: rgba(0, 0, 0, 0.1);
+        }
+
+        .menu-item.active {
+            background-color: rgba(0, 0, 0, 0.2);
+            border-left: 4px solid white;
+        }
+
+        .main-content {
+            flex: 1;
+            padding: 30px;
+            margin-left: 250px;
+            width: calc(100% - 250px);
+        }
+
+        .card {
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s ease;
+            margin-bottom: 20px;
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+        }
+
+        .card-header {
+            border-radius: 10px 10px 0 0 !important;
+        }
+
+        .table th {
+            font-weight: 600;
+            position: sticky;
+            top: 0;
+            background-color: #f8f9fa;
+        }
+
+        .table-container {
+            max-height: 500px;
+            overflow-y: auto;
+        }
+
+        .table-container::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        .table-container::-webkit-scrollbar-track {
+            background: #f1f1f1;
+            border-radius: 10px;
+        }
+
+        .table-container::-webkit-scrollbar-thumb {
+            background: #888;
+            border-radius: 10px;
+        }
+
+        .table-container::-webkit-scrollbar-thumb:hover {
+            background: #555;
+        }
+
+        .badge {
+            font-size: 0.9rem;
+            padding: 5px 10px;
+        }
+
+        .btn {
+            font-weight: 500;
+            border-radius: 5px;
+        }
+
+        .action-btn {
+            margin-right: 5px;
+            padding: 5px 10px;
+            font-size: 0.8rem;
+        }
+
+        .loading-spinner {
+            display: none;
+            text-align: center;
+            padding: 20px;
+        }
+
+        .spinner-border {
+            width: 3rem;
+            height: 3rem;
+        }
+
+        .toast-container {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 9999;
+        }
+
+        .page-header {
+            margin-bottom: 30px;
+            padding-bottom: 15px;
+            border-bottom: 2px solid #eee;
+        }
+
+        .star-rating {
+            color: #FFD700;
+            font-size: 1.1rem;
+        }
+
+        .rating-cell {
+            min-width: 100px;
+        }
+
+        .comment-cell {
+            max-width: 300px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .comment-cell:hover {
+            white-space: normal;
+            overflow: visible;
+            position: relative;
+            z-index: 10;
+            background-color: white;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+        }
+    </style>
+</head>
+
+<body>
+    <div class="dashboard">
+        <div class="sidebar">
+            <div class="sidebar-header">
+                <h2 style="font-size: 24px";>Admin Panel</h2>
+            </div>
+            <div class="sidebar-menu">
+                <a href="admin-dashboard.html" class="menu-item">Home</a>
+                <a href="add-college.html" class="menu-item">Add College</a>
+                <a href="view-colleges.html" class="menu-item">View Colleges</a>
+                <a href="workshop.html" class="menu-item">Workshop</a>
+                <a href="internships.html" class="menu-item">Internships</a>
+                <a href="hackathon.html" class="menu-item">Hackathon</a>
+                <a href="reviews.html" class="menu-item">Reviews</a>
+                <a href="ratings.html" class="menu-item active">Ratings</a>
+                <a href="logout.html" class="menu-item">Logout</a>
+            </div>
+        </div>
+        <div class="main-content">
+            <div class="page-header">
+                <h1><i class="fas fa-star me-2"></i>Ratings Management</h1>
+            </div>
+
+            <div class="card">
+                <div class="card-header bg-primary text-white">
+                    <h3><i class="fas fa-star-half-alt me-2"></i>College Ratings</h3>
+                </div>
+                <div class="card-body">
+                    <div class="mb-3">
+                        <button class="btn btn-success" id="refreshRatingsBtn">
+                            <i class="fas fa-sync-alt me-1"></i>Refresh List
+                        </button>
+                    </div>
+
+                    <div class="input-group mb-3">
+                        <input type="text" class="form-control" id="searchInput" placeholder="Search ratings...">
+                        <button class="btn btn-outline-secondary" type="button" id="searchBtn">
+                            <i class="fas fa-search"></i>
+                        </button>
+                    </div>
+
+                    <div class="table-container">
+                        <table class="table table-striped table-hover">
+                            <thead class="table-light">
+                                <tr>
+                                    <th>College ID</th>
+                                    <th class="rating-cell">Teaching</th>
+                                    <th class="rating-cell">Faculty</th>
+                                    <th class="rating-cell">Campus</th>
+                                    <th class="rating-cell">Extracurricular</th>
+                                    <th class="comment-cell">Comment</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody id="ratingsTableBody">
+                                <!-- Ratings will be loaded here -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <!-- View Rating Modal -->
+            <div class="modal fade" id="viewRatingModal" tabindex="-1" aria-labelledby="viewRatingModalLabel" aria-hidden="true">
+                <div class="modal-dialog modal-lg">
+                    <div class="modal-content">
+                        <div class="modal-header bg-info text-white">
+                            <h5 class="modal-title" id="viewRatingModalLabel">Rating Details</h5>
+                            <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body">
+                            <div class="row mb-3">
+                                <div class="col-md-6">
+                                    <h5><strong>College ID:</strong> <span id="viewCollegeId"></span></h5>
+                                </div>
+                            </div>
+                            
+                            <div class="row mb-3">
+                                <div class="col-md-3">
+                                    <h6>Teaching:</h6>
+                                    <div class="star-rating" id="viewTeaching"></div>
+                                </div>
+                                <div class="col-md-3">
+                                    <h6>Faculty:</h6>
+                                    <div class="star-rating" id="viewFaculty"></div>
+                                </div>
+                                <div class="col-md-3">
+                                    <h6>Campus:</h6>
+                                    <div class="star-rating" id="viewCampus"></div>
+                                </div>
+                                <div class="col-md-3">
+                                    <h6>Extracurricular:</h6>
+                                    <div class="star-rating" id="viewExtracurricular"></div>
+                                </div>
+                            </div>
+                            
+                            <div class="mb-3">
+                                <h6>Comment:</h6>
+                                <div class="p-3 bg-light rounded" id="viewComment"></div>
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Toast Container -->
+            <div class="toast-container"></div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        // Base URL
+        const BASE_URL = 'https://cfef-2401-4900-889d-118d-8c71-91f9-4ea2-adcf.ngrok-free.app';
+
+        // DOM Elements
+        const ratingsTableBody = document.getElementById('ratingsTableBody');
+        const refreshRatingsBtn = document.getElementById('refreshRatingsBtn');
+        const searchBtn = document.getElementById('searchBtn');
+        const searchInput = document.getElementById('searchInput');
+
+        // Global variables
+        let allRatings = [];
+
+        // Initialize the page
+        document.addEventListener('DOMContentLoaded', function () {
+            loadAllRatings();
+
+            // Event listeners
+            refreshRatingsBtn.addEventListener('click', loadAllRatings);
+            searchBtn.addEventListener('click', searchRatings);
+            searchInput.addEventListener('keypress', function (e) {
+                if (e.key === 'Enter') {
+                    searchRatings();
+                }
+            });
+        });
+
+        // Search ratings
+        function searchRatings() {
+            const query = searchInput.value.trim().toLowerCase();
+            if (!query) {
+                renderRatingsTable(allRatings);
+                return;
+            }
+
+            const filteredData = allRatings.filter(rating =>
+                rating.college_id.toLowerCase().includes(query) ||
+                (rating.comment && rating.comment.toLowerCase().includes(query))
+            );
+
+            renderRatingsTable(filteredData);
+        }
+
+        // Load all ratings
+        async function loadAllRatings() {
+            showLoading(ratingsTableBody);
+
+            try {
+                const response = await fetch(`${BASE_URL}/admin/get/ratings`, {
+                    headers: {
+                        'Accept': 'application/json',
+                        'ngrok-skip-browser-warning': 'true',
+                    },
+                });
+
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+
+                const data = await response.json();
+                allRatings = data;
+                renderRatingsTable(data);
+            } catch (error) {
+                console.error('Error loading ratings:', error);
+                showError('Failed to load ratings. Please try again.');
+                ratingsTableBody.innerHTML = `
+                    <tr>
+                        <td colspan="7" class="text-center text-danger">
+                            Failed to load data.<br>
+                            ${error.message}<br>
+                            <small>Check console for details</small>
+                        </td>
+                    </tr>
+                `;
+            }
+        }
+
+        // Render ratings table
+        function renderRatingsTable(ratings) {
+            ratingsTableBody.innerHTML = '';
+
+            if (!ratings || !Array.isArray(ratings)) {
+                console.error('Invalid ratings data:', ratings);
+                ratingsTableBody.innerHTML = '<tr><td colspan="7" class="text-center">Invalid data format</td></tr>';
+                return;
+            }
+
+            if (ratings.length === 0) {
+                ratingsTableBody.innerHTML = '<tr><td colspan="7" class="text-center">No ratings found</td></tr>';
+                return;
+            }
+
+            ratings.forEach(rating => {
+                if (!rating.id || !rating.college_id) {
+                    console.warn('Incomplete rating data:', rating);
+                    return;
+                }
+
+                const row = document.createElement('tr');
+                
+                // Create star ratings
+                const teachingStars = createStarRating(rating.teaching || 0);
+                const facultyStars = createStarRating(rating.faculty || 0);
+                const campusStars = createStarRating(rating.campus || 0);
+                const extracurricularStars = createStarRating(rating.extracurricular || 0);
+
+                row.innerHTML = `
+                    <td>${escapeHtml(rating.college_id)}</td>
+                    <td class="rating-cell">${teachingStars}</td>
+                    <td class="rating-cell">${facultyStars}</td>
+                    <td class="rating-cell">${campusStars}</td>
+                    <td class="rating-cell">${extracurricularStars}</td>
+                    <td class="comment-cell" title="${escapeHtml(rating.comment || '')}">${escapeHtml(rating.comment || 'N/A')}</td>
+                    <td class="action-buttons">
+                        <button class="btn btn-sm btn-primary action-btn view-btn" data-id="${rating.id}">
+                            <i class="fas fa-eye"></i> View
+                        </button>
+                        <button class="btn btn-sm btn-danger action-btn delete-btn" data-id="${rating.id}">
+                            <i class="fas fa-trash"></i> Delete
+                        </button>
+                    </td>
+                `;
+                ratingsTableBody.appendChild(row);
+            });
+
+            addButtonEventListeners();
+        }
+
+        // Create star rating HTML
+        function createStarRating(rating) {
+            const fullStars = Math.floor(rating);
+            const hasHalfStar = rating % 1 >= 0.5;
+            const emptyStars = 5 - fullStars - (hasHalfStar ? 1 : 0);
+            
+            let starsHtml = '';
+            
+            // Full stars
+            for (let i = 0; i < fullStars; i++) {
+                starsHtml += '<i class="fas fa-star"></i>';
+            }
+            
+            // Half star
+            if (hasHalfStar) {
+                starsHtml += '<i class="fas fa-star-half-alt"></i>';
+            }
+            
+            // Empty stars
+            for (let i = 0; i < emptyStars; i++) {
+                starsHtml += '<i class="far fa-star"></i>';
+            }
+            
+            // Add numeric value
+            starsHtml += ` <small>(${rating.toFixed(1)})</small>`;
+            
+            return starsHtml;
+        }
+
+        // Add event listeners to buttons
+        function addButtonEventListeners() {
+            document.querySelectorAll('.view-btn').forEach(btn => {
+                btn.addEventListener('click', function () {
+                    const ratingId = this.getAttribute('data-id');
+                    showRatingDetails(ratingId);
+                });
+            });
+
+            document.querySelectorAll('.delete-btn').forEach(btn => {
+                btn.addEventListener('click', function () {
+                    const ratingId = this.getAttribute('data-id');
+                    if (confirm('Are you sure you want to delete this rating? This action cannot be undone.')) {
+                        deleteRating(ratingId);
+                    }
+                });
+            });
+        }
+
+        // Show rating details (uses existing data, no API call)
+        function showRatingDetails(ratingId) {
+            const rating = allRatings.find(r => r.id == ratingId);
+            if (!rating) {
+                showError('Rating not found in local data');
+                return;
+            }
+
+            // Populate view modal with rating data
+            document.getElementById('viewCollegeId').textContent = rating.college_id;
+            
+            // Set star ratings
+            document.getElementById('viewTeaching').innerHTML = createStarRating(rating.teaching || 0);
+            document.getElementById('viewFaculty').innerHTML = createStarRating(rating.faculty || 0);
+            document.getElementById('viewCampus').innerHTML = createStarRating(rating.campus || 0);
+            document.getElementById('viewExtracurricular').innerHTML = createStarRating(rating.extracurricular || 0);
+            
+            document.getElementById('viewComment').textContent = rating.comment || 'No comment provided';
+
+            // Show the modal
+            const modal = new bootstrap.Modal(document.getElementById('viewRatingModal'));
+            modal.show();
+        }
+
+        // Delete a rating
+        async function deleteRating(ratingId) {
+            try {
+                const response = await fetch(`${BASE_URL}/admin/rating/${ratingId}`, {
+                    method: 'DELETE',
+                    headers: {
+                        'Accept': 'application/json'
+                    }
+                });
+
+                if (!response.ok) {
+                    throw new Error(`Failed to delete rating: ${response.status}`);
+                }
+
+                showSuccess('Rating deleted successfully');
+                loadAllRatings();
+            } catch (error) {
+                console.error('Delete error:', error);
+                showError('Failed to delete rating: ' + error.message);
+            }
+        }
+
+        // Helper functions
+        function showLoading(element) {
+            element.innerHTML = `
+                <tr>
+                    <td colspan="7" class="text-center">
+                        <div class="spinner-border text-primary" role="status">
+                            <span class="visually-hidden">Loading...</span>
+                        </div>
+                    </td>
+                </tr>
+            `;
+        }
+
+        function showSuccess(message) {
+            const toast = document.createElement('div');
+            toast.className = 'toast show align-items-center text-white bg-success';
+            toast.setAttribute('role', 'alert');
+            toast.setAttribute('aria-live', 'assertive');
+            toast.setAttribute('aria-atomic', 'true');
+            toast.innerHTML = `
+                <div class="d-flex">
+                    <div class="toast-body">${message}</div>
+                    <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
+                </div>
+            `;
+            document.querySelector('.toast-container').appendChild(toast);
+            setTimeout(() => toast.remove(), 3000);
+        }
+
+        function showError(message) {
+            const toast = document.createElement('div');
+            toast.className = 'toast show align-items-center text-white bg-danger';
+            toast.setAttribute('role', 'alert');
+            toast.setAttribute('aria-live', 'assertive');
+            toast.setAttribute('aria-atomic', 'true');
+            toast.innerHTML = `
+                <div class="d-flex">
+                    <div class="toast-body">${message}</div>
+                    <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
+                </div>
+            `;
+            document.querySelector('.toast-container').appendChild(toast);
+            setTimeout(() => toast.remove(), 3000);
+        }
+
+        function escapeHtml(unsafe) {
+            if (!unsafe) return '';
+            return unsafe
+                .replace(/&/g, "&amp;")
+                .replace(/</g, "&lt;")
+                .replace(/>/g, "&gt;")
+                .replace(/"/g, "&quot;")
+                .replace(/'/g, "&#039;");
+        }
+    </script>
+</body>
+</html>

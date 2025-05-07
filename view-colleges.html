@@ -1,0 +1,711 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <style>
+        :root {
+            --primary-color: #3498db;
+            --secondary-color: #2980b9;
+            --admin-color: #1b0741;
+            --light-color: #ecf0f1;
+            --dark-color: #2c3e50;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background-color: #f5f5f5;
+        }
+
+        .dashboard {
+            display: flex;
+            min-height: 100vh;
+        }
+
+        .sidebar {
+            width: 250px;
+            background-color: var(--admin-color);
+            color: white;
+            padding: 20px 0;
+        }
+
+        .sidebar-header {
+            padding: 0 20px 20px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .sidebar-header h2 {
+            display: flex;
+            align-items: center;
+        }
+
+        .sidebar-header h2::before {
+            content: "👑";
+            margin-right: 10px;
+        }
+
+        .sidebar-menu {
+            padding: 20px 0;
+        }
+
+        .menu-item {
+            padding: 12px 20px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+            display: block;
+            color: white;
+            text-decoration: none;
+        }
+
+        .menu-item:hover {
+            background-color: rgba(0, 0, 0, 0.1);
+        }
+
+        .menu-item.active {
+            background-color: rgba(0, 0, 0, 0.2);
+            border-left: 4px solid white;
+        }
+
+        .main-content {
+            flex: 1;
+            padding: 30px;
+        }
+
+        /* Table Styles */
+        .content-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .search-box {
+            display: flex;
+            align-items: center;
+        }
+
+        .search-box input {
+            padding: 10px 15px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 16px;
+            width: 300px;
+        }
+
+        .search-box button {
+            padding: 10px 15px;
+            background-color: var(--admin-color);
+            color: white;
+            border: none;
+            border-radius: 4px;
+            margin-left: 10px;
+            cursor: pointer;
+        }
+
+        .table-container {
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+            overflow: hidden;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        th,
+        td {
+            padding: 12px 15px;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+        }
+
+        th {
+            background-color: var(--admin-color);
+            color: white;
+            font-weight: 500;
+        }
+
+        tr:hover {
+            background-color: #f9f9f9;
+        }
+
+        .action-buttons {
+            display: flex;
+            gap: 10px;
+        }
+
+        .action-btn {
+            padding: 5px 10px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 14px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .view-btn {
+            background-color: #3498db;
+            color: white;
+        }
+
+        .edit-btn {
+            background-color: #f39c12;
+            color: white;
+        }
+
+        .delete-btn {
+            background-color: #e74c3c;
+            color: white;
+        }
+
+        /* Modal Styles */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            z-index: 1000;
+            overflow-y: auto;
+        }
+
+        .modal-content {
+            background-color: white;
+            margin: 50px auto;
+            padding: 30px;
+            border-radius: 8px;
+            width: 80%;
+            max-width: 900px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid #eee;
+        }
+
+        .modal-header h2 {
+            color: var(--admin-color);
+        }
+
+        .close-btn {
+            background: none;
+            border: none;
+            font-size: 24px;
+            cursor: pointer;
+            color: #7f8c8d;
+        }
+
+        .modal-body {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+
+        .modal-section {
+            margin-bottom: 20px;
+        }
+
+        .modal-section h3 {
+            margin-bottom: 10px;
+            color: var(--admin-color);
+            border-bottom: 1px solid #eee;
+            padding-bottom: 5px;
+        }
+
+        .modal-row {
+            display: flex;
+            margin-bottom: 10px;
+        }
+
+        .modal-label {
+            font-weight: 500;
+            width: 150px;
+            color: #555;
+        }
+
+        .modal-value {
+            flex: 1;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .modal-body {
+                grid-template-columns: 1fr;
+            }
+
+            .search-box input {
+                width: 200px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="dashboard">
+        <div class="sidebar">
+            <div class="sidebar-header">
+                <h2>Admin Panel</h2>
+            </div>
+            <div class="sidebar-menu">
+                <a href="admin-dashboard.html" class="menu-item">Home</a>
+                <a href="add-college.html" class="menu-item">Add College</a>
+                <a href="view-colleges.html" class="menu-item active">View Colleges</a>
+                <a href="workshop.html" class="menu-item ">Workshop</a>
+                <a href="internships.html" class="menu-item">Internships</a>
+                <a href="hackathon.html" class="menu-item">Hackathon</a>
+                <a href="reviews.html" class="menu-item ">Reviews</a>
+                <a href="ratings.html" class="menu-item ">Ratings</a>
+                <a href="logout.html" class="menu-item">Logout</a>
+            </div>
+        </div>
+        <div class="main-content">
+            <div class="content-header">
+                <h2>Colleges List</h2>
+                <div class="search-box">
+                    <input type="text" id="searchInput" placeholder="Search colleges...">
+                    <button id="searchBtn"><i class="fas fa-search"></i> Search</button>
+                </div>
+            </div>
+
+            <div class="table-container">
+                <table id="collegesTable">
+                    <thead>
+                        <tr>
+                            <th>College Name</th>
+                            <th>College Code</th>
+                            <th>Location</th>
+                            <th>Tier</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="tableBody">
+                        <!-- Data will be loaded here -->
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <!-- View Modal -->
+    <div id="viewModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 id="modalCollegeName">College Details</h2>
+                <button class="close-btn" id="closeModal">&times;</button>
+            </div>
+            <div class="modal-body" id="modalBody">
+                <!-- Details will be loaded here -->
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const tableBody = document.getElementById('tableBody');
+            const searchInput = document.getElementById('searchInput');
+            const searchBtn = document.getElementById('searchBtn');
+            const viewModal = document.getElementById('viewModal');
+            const closeModal = document.getElementById('closeModal');
+            const modalBody = document.getElementById('modalBody');
+            const modalCollegeName = document.getElementById('modalCollegeName');
+
+            let collegesData = [];
+
+            // Fetch colleges data
+            async function fetchColleges() {
+                try {
+                    const response = await fetch('https://7187-2401-4900-889d-ae71-949e-a3c2-1b1-eb88.ngrok-free.app/admin/get/colleges', {
+                        method: 'GET',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            // Add these headers if you're having CORS issues
+                            'Accept': 'application/json',
+                            // 'Authorization': 'Bearer your-token-here' // Uncomment if needed
+                            'ngrok-skip-browser-warning': 'true' ,
+                        },
+                        credentials: 'include' // Add this if your API requires cookies
+                    });
+
+                    // First check if the response is HTML (error page)
+                    const contentType = response.headers.get('content-type');
+                    if (contentType && contentType.includes('text/html')) {
+                        const html = await response.text();
+                        console.error('Server returned HTML instead of JSON:', html);
+                        throw new Error('Server returned an error page');
+                    }
+
+                    if (!response.ok) {
+                        // Try to get error details if available
+                        let errorDetails = '';
+                        try {
+                            const errorData = await response.json();
+                            errorDetails = errorData.message || JSON.stringify(errorData);
+                        } catch (e) {
+                            errorDetails = await response.text();
+                        }
+                        throw new Error(`HTTP error! status: ${response.status}, details: ${errorDetails}`);
+                    }
+
+                    collegesData = await response.json();
+                    renderTable(collegesData);
+                    console.log('Colleges data:', collegesData);
+
+                } catch (error) {
+                    console.error('Error fetching colleges:', error);
+                    alert(`Error loading colleges data: ${error.message}`);
+                }
+            }
+
+
+            // Render table with data
+            function renderTable(data) {
+                tableBody.innerHTML = '';
+                data.forEach(college => {
+                    const row = document.createElement('tr');
+                    row.innerHTML = `
+                        <td>${college.name}</td>
+                        <td>${college.collegeCode}</td>
+                        <td>${college.location}</td>
+                        <td>${college.tier || 'N/A'}</td>
+                        <td>
+                            <div class="action-buttons">
+                                <button class="action-btn view-btn" data-code="${college.collegeCode}">
+                                    <i class="fas fa-eye"></i> View
+                                </button>
+                                <button class="action-btn edit-btn" data-code="${college.collegeCode}">
+                                    <i class="fas fa-edit"></i> Edit
+                                </button>
+                                <button class="action-btn delete-btn" data-code="${college.collegeCode}">
+                                    <i class="fas fa-trash"></i> Delete
+                                </button>
+                            </div>
+                        </td>
+                    `;
+                    tableBody.appendChild(row);
+                });
+
+                // Add event listeners to action buttons
+                document.querySelectorAll('.view-btn').forEach(btn => {
+                    btn.addEventListener('click', viewCollegeDetails);
+                });
+
+                document.querySelectorAll('.edit-btn').forEach(btn => {
+                    btn.addEventListener('click', editCollege);
+                });
+
+                document.querySelectorAll('.delete-btn').forEach(btn => {
+                    btn.addEventListener('click', deleteCollege);
+                });
+            }
+
+            // Search functionality
+            function searchColleges() {
+                const searchTerm = searchInput.value.toLowerCase();
+                const filteredData = collegesData.filter(college =>
+                    college.name.toLowerCase().includes(searchTerm) ||
+                    college.collegeCode.toLowerCase().includes(searchTerm) ||
+                    college.location.toLowerCase().includes(searchTerm) ||
+                    (college.tier && college.tier.toLowerCase().includes(searchTerm))
+                );
+                renderTable(filteredData);
+            }
+
+            searchBtn.addEventListener('click', searchColleges);
+            searchInput.addEventListener('keyup', function (e) {
+                if (e.key === 'Enter') {
+                    searchColleges();
+                }
+            });
+
+
+
+            // View button function
+            async function viewCollegeDetails(e) {
+                // Verify modal elements exist
+                const viewModal = document.getElementById('viewModal');
+                const modalBody = document.getElementById('modalBody');
+                const modalCollegeName = document.getElementById('modalCollegeName');
+
+                if (!viewModal || !modalBody || !modalCollegeName) {
+                    console.error('Modal elements not found');
+                    alert('Error: Modal components not initialized');
+                    return;
+                }
+
+                const collegeCode = e.currentTarget.getAttribute('data-code');
+                console.log('Viewing college:', collegeCode);
+
+                try {
+                    // Show loading state
+                    modalBody.innerHTML = '<div class="loading-spinner">Loading college details...</div>';
+                    modalCollegeName.textContent = 'Loading...';
+                    viewModal.style.display = 'block';
+
+                    const response = await fetch(`https://7187-2401-4900-889d-ae71-949e-a3c2-1b1-eb88.ngrok-free.app/admin/get/all_college_details/${collegeCode}`, {
+                        headers: {
+                            'Accept': 'application/json',
+                            'Content-Type': 'application/json',
+                            'ngrok-skip-browser-warning': 'true'
+                        }
+                    });
+
+                    // Clone the response for multiple reads
+                    const responseClone = response.clone();
+
+                    // Check if response is JSON
+                    const contentType = response.headers.get('content-type');
+                    if (!contentType || !contentType.includes('application/json')) {
+                        const text = await response.text();
+                        console.error('Server returned non-JSON response:', text);
+                        throw new Error('Server returned an unexpected response format');
+                    }
+
+                    if (!response.ok) {
+                        const errorData = await responseClone.json().catch(() => ({}));
+                        throw new Error(errorData.message || `Server responded with status ${response.status}`);
+                    }
+
+                    const collegeDetails = await responseClone.json();
+                    console.log('College details received:', collegeDetails);
+
+                    if (!collegeDetails || Object.keys(collegeDetails).length === 0) {
+                        throw new Error('No data returned for this college');
+                    }
+
+                    // Find college in our data
+                    const college = collegesData.find(c => c.collegeCode === collegeCode);
+                    modalCollegeName.textContent = college ? `${college.name} Details` : 'College Details';
+
+                    // Safely populate modal with details using optional chaining
+                    modalBody.innerHTML = `
+            <div class="modal-section">
+                <h3>Basic Information</h3>
+                <div class="modal-row">
+                    <div class="modal-label">College Code:</div>
+                    <div class="modal-value">${collegeDetails?.collegeCode ?? 'N/A'}</div>
+                </div>
+                <div class="modal-row">
+                    <div class="modal-label">Level:</div>
+                    <div class="modal-value">${collegeDetails?.level ?? 'N/A'}</div>
+                </div>
+                <div class="modal-row">
+                    <div class="modal-label">Specialization:</div>
+                    <div class="modal-value">${collegeDetails?.specialization ?? 'N/A'}</div>
+                </div>
+                <div class="modal-row">
+                    <div class="modal-label">Total Seats:</div>
+                    <div class="modal-value">${collegeDetails?.totalSeats ?? 'N/A'}</div>
+                </div>
+                <div class="modal-row">
+                    <div class="modal-label">Seats Available:</div>
+                    <div class="modal-value">${collegeDetails?.seatsAvailable ?? 'N/A'}</div>
+                </div>
+            </div>
+
+            <div class="modal-section">
+                <h3>Admission Details</h3>
+                <div class="modal-row">
+                    <div class="modal-label">Criteria:</div>
+                    <div class="modal-value">${collegeDetails?.criteria ?? 'N/A'}</div>
+                </div>
+                <div class="modal-row">
+                    <div class="modal-label">Cutoff Rank:</div>
+                    <div class="modal-value">${collegeDetails?.cutoffRank ?? 'N/A'}</div>
+                </div>
+                <div class="modal-row">
+                    <div class="modal-label">Management Fees:</div>
+                    <div class="modal-value">₹${collegeDetails?.managementFees?.toLocaleString('en-IN') ?? 'N/A'}</div>
+                </div>
+            </div>
+
+            <div class="modal-section">
+                <h3>Contact Information</h3>
+                <div class="modal-row">
+                    <div class="modal-label">Email:</div>
+                    <div class="modal-value">${collegeDetails?.email ?? 'N/A'}</div>
+                </div>
+                <div class="modal-row">
+                    <div class="modal-label">Phone:</div>
+                    <div class="modal-value">${collegeDetails?.phone ?? 'N/A'}</div>
+                </div>
+                <div class="modal-row">
+                    <div class="modal-label">Address:</div>
+                    <div class="modal-value">${collegeDetails?.address ?? 'N/A'}</div>
+                </div>
+            </div>
+
+            <div class="modal-section">
+                <h3>Placement Details</h3>
+                <div class="modal-row">
+                    <div class="modal-label">Placement %:</div>
+                    <div class="modal-value">${collegeDetails?.placementPercentage ?? 'N/A'}%</div>
+                </div>
+                <div class="modal-row">
+                    <div class="modal-label">Highest Package:</div>
+                    <div class="modal-value">₹${collegeDetails?.highestPackage?.toLocaleString('en-IN') ?? 'N/A'}</div>
+                </div>
+                <div class="modal-row">
+                    <div class="modal-label">Average Package:</div>
+                    <div class="modal-value">₹${collegeDetails?.averagePackage?.toLocaleString('en-IN') ?? 'N/A'}</div>
+                </div>
+                <div class="modal-row">
+                    <div class="modal-label">Top Recruiters:</div>
+                    <div class="modal-value">${collegeDetails?.topRecruiters ?? 'N/A'}</div>
+                </div>
+            </div>
+
+            <div class="modal-section">
+                <h3>Facilities</h3>
+                <div class="modal-row">
+                    <div class="modal-value">
+                        ${collegeDetails?.wifi ? '✓ WiFi' : '✗ WiFi'} | 
+                        ${collegeDetails?.library ? '✓ Library' : '✗ Library'} | 
+                        ${collegeDetails?.hostel ? '✓ Hostel' : '✗ Hostel'}
+                    </div>
+                </div>
+                <div class="modal-row">
+                    <div class="modal-value">
+                        ${collegeDetails?.canteen ? '✓ Canteen' : '✗ Canteen'} | 
+                        ${collegeDetails?.gym ? '✓ Gym' : '✗ Gym'} | 
+                        ${collegeDetails?.sports ? '✓ Sports' : '✗ Sports'}
+                    </div>
+                </div>
+                <div class="modal-row">
+                    <div class="modal-value">
+                        ${collegeDetails?.medicalFacilities ? '✓ Medical Facilities' : '✗ Medical Facilities'} | 
+                        ${collegeDetails?.lateralEntryAvailable ? '✓ Lateral Entry' : '✗ Lateral Entry'}
+                    </div>
+                </div>
+            </div>
+        `;
+
+                } catch (error) {
+                    console.error('Error in viewCollegeDetails:', error);
+                    modalBody.innerHTML = `
+            <div class="error-container">
+                <h3>Error Loading College Details</h3>
+                <p>${error.message}</p>
+                <p>College Code: ${collegeCode}</p>
+                <p>URL: https://7187-2401-4900-889d-ae71-949e-a3c2-1b1-eb88.ngrok-free.app/admin/get/all_college_details/${collegeCode}</p>
+                <p>Please try again later or contact support.</p>
+            </div>
+        `;
+                    modalCollegeName.textContent = 'Error';
+                } finally {
+                    viewModal.style.display = 'block';
+                }
+            }
+
+
+            // Edit college - redirect to add college page with data
+            function editCollege(e) {
+                const collegeCode = e.currentTarget.getAttribute('data-code');
+                // Find the college in our data
+                const college = collegesData.find(c => c.collegeCode === collegeCode);
+
+                if (college) {
+                    // First fetch all details of the college
+                    fetch(`https://7187-2401-4900-889d-ae71-949e-a3c2-1b1-eb88.ngrok-free.app/admin/get/all_college_details/${collegeCode}`, {
+                        headers: {
+                            'Accept': 'application/json',
+                            'Content-Type': 'application/json',
+                            'ngrok-skip-browser-warning': 'true'
+                        }
+                    })
+                        .then(response => {
+                            // Check if response is JSON
+                            const contentType = response.headers.get('content-type');
+                            if (!contentType || !contentType.includes('application/json')) {
+                                throw new Error('Server returned non-JSON response');
+                            }
+                            if (!response.ok) {
+                                throw new Error(`HTTP error! status: ${response.status}`);
+                            }
+                            return response.json();
+                        })
+                        .then(collegeDetails => {
+                            // Combine basic info with all details
+                            const fullCollegeData = {
+                                ...college,
+                                ...collegeDetails
+                            };
+
+                            // Store complete college data in localStorage
+                            localStorage.setItem('editCollegeData', JSON.stringify(fullCollegeData));
+
+                            // Navigate to add-college page
+                            window.location.href = 'add-college.html';
+                        })
+                        .catch(error => {
+                            console.error('Error fetching college details:', error);
+                            // If we can't get full details, at least send the basic info
+                            localStorage.setItem('editCollegeData', JSON.stringify(college));
+                            window.location.href = 'add-college.html';
+                        });
+                }
+            }
+
+
+            // Delete college
+            async function deleteCollege(e) {
+                const collegeCode = e.currentTarget.getAttribute('data-code');
+                if (confirm(`Are you sure you want to delete college ${collegeCode}?`)) {
+                    try {
+                        const response = await fetch(`https://7187-2401-4900-889d-ae71-949e-a3c2-1b1-eb88.ngrok-free.app/admin/delete/college/${collegeCode}`, {
+                            method: 'DELETE'
+                        });
+
+                        if (!response.ok) {
+                            throw new Error('Failed to delete college');
+                        }
+
+                        // Remove from local data and re-render table
+                        collegesData = collegesData.filter(college => college.collegeCode !== collegeCode);
+                        renderTable(collegesData);
+                        alert('College deleted successfully');
+                    } catch (error) {
+                        console.error('Error deleting college:', error);
+                        alert('Error deleting college. Please try again.');
+                    }
+                }
+            }
+
+            // Close modal
+            closeModal.addEventListener('click', function () {
+                viewModal.style.display = 'none';
+            });
+
+            // Close modal when clicking outside
+            window.addEventListener('click', function (e) {
+                if (e.target === viewModal) {
+                    viewModal.style.display = 'none';
+                }
+            });
+
+            // Initialize
+            fetchColleges();
+        });
+    </script>
+</body>
+
+</html>
