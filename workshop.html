@@ -601,8 +601,8 @@
 
                 try {
                     const url = isEditMode
-                        ? `https://3b43-2401-4900-1c27-7d2d-b8d0-58aa-1201-526c.ngrok-free.app/api/admin/workshops/update_workshop/${currentWorkshopId}`
-                        : 'https://3b43-2401-4900-1c27-7d2d-b8d0-58aa-1201-526c.ngrok-free.app/api/admin/workshops/save/workshop';
+                        ? `https://apicollegerepo.lytortech.com/api/admin/workshops/update_workshop/${currentWorkshopId}`
+                        : 'https://apicollegerepo.lytortech.com/api/admin/workshops/save/workshop';
 
                     const method = isEditMode ? 'PUT' : 'POST';
 
@@ -660,7 +660,7 @@
                 try {
                     console.log('Attempting to fetch workshops...');
 
-                    const response = await fetch('https://3b43-2401-4900-1c27-7d2d-b8d0-58aa-1201-526c.ngrok-free.app/api/admin/workshops/all/workshops', {
+                    const response = await fetch('https://apicollegerepo.lytortech.com/api/admin/workshops/all/workshops', {
                         headers: {
                             'Accept': 'application/json',
                             'Content-Type': 'application/json',
@@ -828,7 +828,7 @@
                     let registrationCount = workshop.count || 0;
 
                     try {
-                        const baseUrl = 'https://3b43-2401-4900-1c27-7d2d-b8d0-58aa-1201-526c.ngrok-free.app';
+                        const baseUrl = 'https://apicollegerepo.lytortech.com';
                         const registrationsUrl = `${baseUrl}/api/admin/workshops/workshop/forms/${idStr}`;
 
                         console.log('[viewWorkshop] Fetching registrations from:', registrationsUrl);
@@ -1122,7 +1122,7 @@
 
                 if (result.isConfirmed) {
                     try {
-                        const response = await fetch(`https://3b43-2401-4900-1c27-7d2d-b8d0-58aa-1201-526c.ngrok-free.app/api/admin/workshops/delete/${id}`, {
+                        const response = await fetch(`https://apicollegerepo.lytortech.com/api/admin/workshops/delete/${id}`, {
                             method: 'DELETE'
                         });
 
@@ -1194,7 +1194,7 @@
                 try {
                     console.log('Fetching banners...');
 
-                    const response = await fetch('https://3b43-2401-4900-1c27-7d2d-b8d0-58aa-1201-526c.ngrok-free.app/api/admin/workshops/get/workshop_banners', {
+                    const response = await fetch('https://apicollegerepo.lytortech.com/api/admin/workshops/get/workshop_banners', {
                         method: 'GET',
                         headers: {
                             'Accept': 'application/json',
@@ -1293,7 +1293,7 @@
                     }
 
                     console.log('Sending banner upload request...');
-                    const response = await fetch('https://3b43-2401-4900-1c27-7d2d-b8d0-58aa-1201-526c.ngrok-free.app/api/admin/workshops/save/workshop_banner', {
+                    const response = await fetch('https://apicollegerepo.lytortech.com/api/admin/workshops/save/workshop_banner', {
                         method: 'POST',
                         body: formData,
                     });
@@ -1327,7 +1327,7 @@
             async function deleteBanner(index) {
                 try {
                     const banner = banners[index];
-                    const response = await fetch(`https://3b43-2401-4900-1c27-7d2d-b8d0-58aa-1201-526c.ngrok-free.app/api/admin/workshops/delete_banner/${banner.id}`, {
+                    const response = await fetch(`https://apicollegerepo.lytortech.com/api/admin/workshops/delete_banner/${banner.id}`, {
                         method: 'DELETE'
                     });
 

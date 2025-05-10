@@ -334,7 +334,7 @@
             // Fetch colleges data
             async function fetchColleges() {
                 try {
-                    const response = await fetch('https://7187-2401-4900-889d-ae71-949e-a3c2-1b1-eb88.ngrok-free.app/admin/get/colleges', {
+                    const response = await fetch('https://apicollegerepo.lytortech.com/admin/get/colleges', {
                         method: 'GET',
                         headers: {
                             'Content-Type': 'application/json',
@@ -461,7 +461,7 @@
                     modalCollegeName.textContent = 'Loading...';
                     viewModal.style.display = 'block';
 
-                    const response = await fetch(`https://7187-2401-4900-889d-ae71-949e-a3c2-1b1-eb88.ngrok-free.app/admin/get/all_college_details/${collegeCode}`, {
+                    const response = await fetch(`https://apicollegerepo.lytortech.com/admin/get/all_college_details/${collegeCode}`, {
                         headers: {
                             'Accept': 'application/json',
                             'Content-Type': 'application/json',
@@ -606,7 +606,7 @@
                 <h3>Error Loading College Details</h3>
                 <p>${error.message}</p>
                 <p>College Code: ${collegeCode}</p>
-                <p>URL: https://7187-2401-4900-889d-ae71-949e-a3c2-1b1-eb88.ngrok-free.app/admin/get/all_college_details/${collegeCode}</p>
+                <p>URL: https://apicollegerepo.lytortech.com/admin/get/all_college_details/${collegeCode}</p>
                 <p>Please try again later or contact support.</p>
             </div>
         `;
@@ -625,7 +625,7 @@
 
                 if (college) {
                     // First fetch all details of the college
-                    fetch(`https://7187-2401-4900-889d-ae71-949e-a3c2-1b1-eb88.ngrok-free.app/admin/get/all_college_details/${collegeCode}`, {
+                    fetch(`https://apicollegerepo.lytortech.com/admin/get/all_college_details/${collegeCode}`, {
                         headers: {
                             'Accept': 'application/json',
                             'Content-Type': 'application/json',
@@ -671,7 +671,7 @@
                 const collegeCode = e.currentTarget.getAttribute('data-code');
                 if (confirm(`Are you sure you want to delete college ${collegeCode}?`)) {
                     try {
-                        const response = await fetch(`https://7187-2401-4900-889d-ae71-949e-a3c2-1b1-eb88.ngrok-free.app/admin/delete/college/${collegeCode}`, {
+                        const response = await fetch(`https://apicollegerepo.lytortech.com/admin/delete/college/${collegeCode}`, {
                             method: 'DELETE'
                         });
 

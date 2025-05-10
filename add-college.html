@@ -927,7 +927,7 @@
                     console.log('Processing removed files:', removedFiles);
 
                     // Send removal request to server
-                    const response = await fetch('https://7187-2401-4900-889d-ae71-949e-a3c2-1b1-eb88.ngrok-free.app/admin/delete/images', {
+                    const response = await fetch('https://apicollegerepo.lytortech.com/admin/delete/images', {
                         method: 'POST',
                         headers: {
                             'Content-Type': 'application/json'
@@ -1020,8 +1020,8 @@
                     // Determine the method based on edit mode
                     const method = isEditMode ? 'POST' : 'POST';
                     const endpoint = isEditMode
-                        ? `https://7187-2401-4900-889d-ae71-949e-a3c2-1b1-eb88.ngrok-free.app/admin/colleges`
-                        : 'https://7187-2401-4900-889d-ae71-949e-a3c2-1b1-eb88.ngrok-free.app/admin/colleges';
+                        ? `https://apicollegerepo.lytortech.com/admin/colleges`
+                        : 'https://apicollegerepo.lytortech.com/admin/colleges';
 
                     console.log(`Using ${method} request to ${endpoint}`);
 
@@ -1136,7 +1136,7 @@
 
                     console.log('Submitting college details:', data);
 
-                    const response = await fetch('https://7187-2401-4900-889d-ae71-949e-a3c2-1b1-eb88.ngrok-free.app/admin/college/all_details', {
+                    const response = await fetch('https://apicollegerepo.lytortech.com/admin/college/all_details', {
                         method: isEditMode ? 'POST' : 'POST',
                         headers: {
                             'Content-Type': 'application/json',
@@ -1201,7 +1201,7 @@
 
                         console.log('Uploading profile photo...');
 
-                        const profileResponse = await fetch('https://7187-2401-4900-889d-ae71-949e-a3c2-1b1-eb88.ngrok-free.app/admin/save/image', {
+                        const profileResponse = await fetch('https://apicollegerepo.lytortech.com/admin/save/image', {
                             method: 'POST',
                             body: profileFormData
                         });
@@ -1227,7 +1227,7 @@
 
                         console.log('Uploading college images...', imagesFormData);
 
-                        const imagesResponse = await fetch('https://7187-2401-4900-889d-ae71-949e-a3c2-1b1-eb88.ngrok-free.app/admin/save/images', {
+                        const imagesResponse = await fetch('https://apicollegerepo.lytortech.com/admin/save/images', {
                             method: 'POST',
                             body: imagesFormData
                         });
@@ -1250,7 +1250,7 @@
 
                         console.log('Uploading brochure...');
 
-                        const brochureResponse = await fetch('https://7187-2401-4900-889d-ae71-949e-a3c2-1b1-eb88.ngrok-free.app/admin/save/brocher', {
+                        const brochureResponse = await fetch('https://apicollegerepo.lytortech.com/admin/save/brocher', {
                             method: 'POST',
                             body: brochureFormData
                         });
