@@ -341,7 +341,7 @@
                             // Add these headers if you're having CORS issues
                             'Accept': 'application/json',
                             // 'Authorization': 'Bearer your-token-here' // Uncomment if needed
-                            'ngrok-skip-browser-warning': 'true' ,
+                            'ngrok-skip-browser-warning': 'true',
                         },
                         credentials: 'include' // Add this if your API requires cookies
                     });
@@ -536,6 +536,14 @@
                     <div class="modal-label">Management Fees:</div>
                     <div class="modal-value">₹${collegeDetails?.managementFees?.toLocaleString('en-IN') ?? 'N/A'}</div>
                 </div>
+                <div class="modal-row">
+                    <div class="modal-label">Courses:</div>
+                    <div class="modal-value">${collegeDetails?.courses ?? 'N/A'}</div>
+                </div>
+                <div class="modal-row">
+                    <div class="modal-label">Category:</div>
+                    <div class="modal-value">${collegeDetails?.category ?? 'N/A'}</div>
+                </div>
             </div>
 
             <div class="modal-section">
@@ -552,6 +560,7 @@
                     <div class="modal-label">Address:</div>
                     <div class="modal-value">${collegeDetails?.address ?? 'N/A'}</div>
                 </div>
+                
             </div>
 
             <div class="modal-section">
@@ -595,6 +604,12 @@
                         ${collegeDetails?.medicalFacilities ? '✓ Medical Facilities' : '✗ Medical Facilities'} | 
                         ${collegeDetails?.lateralEntryAvailable ? '✓ Lateral Entry' : '✗ Lateral Entry'}
                     </div>
+                </div>
+            </div>
+            <div class="modal-section">
+                <div class="modal-row">
+                    <div class="modal-label">Google Map Link :</div>
+                    <div class="modal-value">${collegeDetails?.googleMapsLink ?? 'N/A'}</div>
                 </div>
             </div>
         `;

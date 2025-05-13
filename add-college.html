@@ -351,6 +351,22 @@
             vertical-align: middle;
         }
 
+        .multi-select-dropdown {
+            border: 1px solid #ccc;
+            padding: 10px;
+            width: 100%;
+            max-height: 120px;
+            overflow-y: auto;
+            background-color: #fff;
+            border-radius: 4px;
+        }
+
+        .multi-select-dropdown label {
+            display: block;
+            margin-bottom: 5px;
+            cursor: pointer;
+        }
+
         @keyframes spin {
             to {
                 transform: rotate(360deg);
@@ -426,8 +442,8 @@
                             <input type="text" id="universityAffiliation" class="form-control" required>
                         </div>
                         <div class="form-group">
-                            <label for="accreditation">Accreditation*</label>
-                            <input type="text" id="accreditation" class="form-control" required>
+                            <label for="accreditation">Accreditation</label>
+                            <input type="text" id="accreditation" class="form-control">
                         </div>
                     </div>
 
@@ -476,12 +492,18 @@
                         </div>
                     </div>
 
-                    <div class="form-group">
-                        <label for="recommended">Recommended</label>
-                        <select id="recommended" class="form-control">
-                            <option value="Yes">Yes</option>
-                            <option value="No">No</option>
-                        </select>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="recommended">Recommended</label>
+                            <select id="recommended" class="form-control">
+                                <option value="Yes">Yes</option>
+                                <option value="No">No</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="registration">Youtube-URL</label>
+                            <input type="text" id="youtubeurl" class="form-control">
+                        </div>
                     </div>
 
                     <div class="form-actions">
@@ -495,8 +517,8 @@
                 <form id="collegeDetailsForm" class="form-step">
                     <div class="form-row">
                         <div class="form-group">
-                            <label for="criteria">Admission Criteria*</label>
-                            <input type="text" id="criteria" class="form-control" required>
+                            <label for="criteria">Admission Criteria</label>
+                            <input type="text" id="criteria" class="form-control">
                         </div>
                         <div class="form-group">
                             <label for="cutoffRank">Cutoff Rank</label>
@@ -517,12 +539,12 @@
 
                     <div class="form-row">
                         <div class="form-group">
-                            <label for="email">Email*</label>
-                            <input type="email" id="email" class="form-control" required>
+                            <label for="email">Email</label>
+                            <input type="email" id="email" class="form-control">
                         </div>
                         <div class="form-group">
-                            <label for="phone">Phone*</label>
-                            <input type="tel" id="phone" class="form-control" required>
+                            <label for="phone">Phone</label>
+                            <input type="tel" id="phone" class="form-control">
                         </div>
                     </div>
 
@@ -532,31 +554,33 @@
                             <input type="url" id="googleMapsLink" class="form-control">
                         </div>
                         <div class="form-group">
-                            <label for="address">Address*</label>
-                            <input type="text" id="address" class="form-control" required>
+                            <label for="address">Address</label>
+                            <input type="text" id="address" class="form-control">
                         </div>
                     </div>
 
                     <div class="form-row">
                         <div class="form-group">
-                            <label for="level">Level*</label>
-                            <select id="level" class="form-control" required>
-                                <option value="">Select Level</option>
-                                <option value="UG">Undergraduate</option>
-                                <option value="PG">Postgraduate</option>
-                                <option value="Diploma">Diploma</option>
-                            </select>
+                            <label>Level</label>
+                            <div class="multi-select-dropdown" id="levelOptions">
+                                <label><input type="checkbox" value="UG"> Undergraduate</label>
+                                <label><input type="checkbox" value="PG"> Postgraduate</label>
+                                <label><input type="checkbox" value="Diploma"> Diploma</label>
+                                <label><input type="checkbox" value="PhD"> Ph.D</label>
+
+                            </div>
                         </div>
+
                         <div class="form-group">
-                            <label for="specialization">Specialization*</label>
-                            <input type="text" id="specialization" class="form-control" required>
+                            <label for="specialization">Specialization</label>
+                            <input type="text" id="specialization" class="form-control">
                         </div>
                     </div>
 
                     <div class="form-row">
                         <div class="form-group">
-                            <label for="totalSeats">Total Seats*</label>
-                            <input type="number" id="totalSeats" class="form-control" required>
+                            <label for="totalSeats">Total Seats</label>
+                            <input type="number" id="totalSeats" class="form-control">
                         </div>
                         <div class="form-group">
                             <label for="seatsAvailable">Seats Available</label>
@@ -564,46 +588,108 @@
                         </div>
                     </div>
 
-                    <div class="form-group">
-                        <label>Facilities</label>
-                        <div class="checkbox-group">
-                            <input type="checkbox" id="lateralEntryAvailable">
-                            <label for="lateralEntryAvailable">Lateral Entry Available</label>
+                    <div class="form-row">
+                        <!-- Facilities Section -->
+                        <div class="form-group" style="width: 48%; display: inline-block; vertical-align: top;">
+                            <label>Facilities</label>
+
+                            <div class="checkbox-group"><input type="checkbox" id="lateralEntryAvailable"><label
+                                    for="lateralEntryAvailable"> Lateral Entry Available</label></div>
+                            <div class="checkbox-group"><input type="checkbox" id="wifi"><label for="wifi"> WiFi</label>
+                            </div>
+                            <div class="checkbox-group"><input type="checkbox" id="library"><label for="library">
+                                    Library</label></div>
+                            <div class="checkbox-group"><input type="checkbox" id="hostel"><label for="hostel">
+                                    Hostel</label></div>
+                            <div class="checkbox-group"><input type="checkbox" id="canteen"><label for="canteen">
+                                    Canteen</label></div>
+                            <div class="checkbox-group"><input type="checkbox" id="gym"><label for="gym"> Gym</label>
+                            </div>
+                            <div class="checkbox-group"><input type="checkbox" id="sports"><label for="sports">
+                                    Sports</label></div>
+                            <div class="checkbox-group"><input type="checkbox" id="medicalFacilities"><label
+                                    for="medicalFacilities"> Medical Facilities</label></div>
                         </div>
-                        <div class="checkbox-group">
-                            <input type="checkbox" id="wifi">
-                            <label for="wifi">WiFi</label>
-                        </div>
-                        <div class="checkbox-group">
-                            <input type="checkbox" id="library">
-                            <label for="library">Library</label>
-                        </div>
-                        <div class="checkbox-group">
-                            <input type="checkbox" id="hostel">
-                            <label for="hostel">Hostel</label>
-                        </div>
-                        <div class="checkbox-group">
-                            <input type="checkbox" id="canteen">
-                            <label for="canteen">Canteen</label>
-                        </div>
-                        <div class="checkbox-group">
-                            <input type="checkbox" id="gym">
-                            <label for="gym">Gym</label>
-                        </div>
-                        <div class="checkbox-group">
-                            <input type="checkbox" id="sports">
-                            <label for="sports">Sports</label>
-                        </div>
-                        <div class="checkbox-group">
-                            <input type="checkbox" id="medicalFacilities">
-                            <label for="medicalFacilities">Medical Facilities</label>
+
+                        <!-- Course Fields Section -->
+                        <div class="form-group"
+                            style="width: 48%; display: inline-block; vertical-align: top; margin-left: 4%;">
+                            <label>Course Fields</label>
+                            <div id="courseFields"
+                                style="border: 1px solid #ccc; padding: 10px; max-height: 200px; overflow-y: auto; background-color: #fff; border-radius: 4px;">
+
+                                <!-- You can format this better if needed -->
+                                <label style="display:block;"><input type="checkbox" value="B.Tech"> B.Tech (Bachelor of
+                                    Technology)</label>
+                                <label style="display:block;"><input type="checkbox" value="B.E"> B.E (Bachelor of
+                                    Engineering)</label>
+                                <label style="display:block;"><input type="checkbox" value="M.Tech"> M.Tech (Master of
+                                    Technology)</label>
+                                <label style="display:block;"><input type="checkbox" value="M.E"> M.E (Master of
+                                    Engineering)</label>
+                                <label style="display:block;"><input type="checkbox" value="BBA"> BBA (Bachelor of
+                                    Business Administration)</label>
+                                <label style="display:block;"><input type="checkbox" value="BBM"> BBM (Bachelor of
+                                    Business Management)</label>
+                                <label style="display:block;"><input type="checkbox" value="MBA"> MBA (Master of
+                                    Business Administration)</label>
+                                <label style="display:block;"><input type="checkbox" value="PGDM"> PGDM (Post Graduate
+                                    Diploma in Management)</label>
+                                <label style="display:block;"><input type="checkbox" value="BCA"> BCA (Bachelor of
+                                    Computer Applications)</label>
+                                <label style="display:block;"><input type="checkbox" value="MCA"> MCA (Master of
+                                    Computer Applications)</label>
+                                <label style="display:block;"><input type="checkbox" value="B.Sc"> B.Sc (Bachelor of
+                                    Science)</label>
+                                <label style="display:block;"><input type="checkbox" value="B.A"> B.A (Bachelor of
+                                    Arts)</label>
+                                <label style="display:block;"><input type="checkbox" value="B.Com"> B.Com (Bachelor of
+                                    Commerce)</label>
+                                <label style="display:block;"><input type="checkbox" value="M.Sc"> M.Sc (Master of
+                                    Science)</label>
+                                <label style="display:block;"><input type="checkbox" value="M.A"> M.A (Master of
+                                    Arts)</label>
+                                <label style="display:block;"><input type="checkbox" value="M.Com"> M.Com (Master
+                                    Commerce)</label>
+                                <label style="display:block;"><input type="checkbox" value="MBBS"> MBBS</label>
+                                <label style="display:block;"><input type="checkbox" value="BDS"> BDS</label>
+                                <label style="display:block;"><input type="checkbox" value="BAMS"> BAMS</label>
+                                <label style="display:block;"><input type="checkbox" value="BHMS"> BHMS</label>
+                                <label style="display:block;"><input type="checkbox" value="BPT"> BPT</label>
+                                <label style="display:block;"><input type="checkbox" value="B.Pharm"> B.Pharm</label>
+                                <label style="display:block;"><input type="checkbox" value="M.Pharm"> M.Pharm</label>
+                                <label style="display:block;"><input type="checkbox" value="MD"> MD</label>
+                                <label style="display:block;"><input type="checkbox" value="MS"> MS</label>
+                                <label style="display:block;"><input type="checkbox" value="LLB"> LLB</label>
+                                <label style="display:block;"><input type="checkbox" value="BA LLB"> BA LLB</label>
+                                <label style="display:block;"><input type="checkbox" value="BBA LLB"> BBA LLB</label>
+                                <label style="display:block;"><input type="checkbox" value="LLM"> LLM</label>
+                                <label style="display:block;"><input type="checkbox" value="B.Ed"> B.Ed</label>
+                                <label style="display:block;"><input type="checkbox" value="M.Ed"> M.Ed</label>
+                                <label style="display:block;"><input type="checkbox" value="D.Ed"> D.Ed</label>
+                                <label style="display:block;"><input type="checkbox" value="B.Des"> B.Des</label>
+                                <label style="display:block;"><input type="checkbox" value="M.Des"> M.Des</label>
+                                <label style="display:block;"><input type="checkbox" value="BFA"> BFA</label>
+                                <label style="display:block;"><input type="checkbox" value="B.Arch"> B.Arch</label>
+                                <label style="display:block;"><input type="checkbox" value="M.Arch"> M.Arch</label>
+                                <label style="display:block;"><input type="checkbox" value="BHM"> BHM</label>
+                                <label style="display:block;"><input type="checkbox" value="DHM"> DHM</label>
+                                <label style="display:block;"><input type="checkbox" value="Diploma"> Diploma
+                                    (Polytechnic)</label>
+                                <label style="display:block;"><input type="checkbox" value="PG Diploma"> PG
+                                    Diploma</label>
+                                <label style="display:block;"><input type="checkbox" value="Certificate Courses">
+                                    Certificate Courses</label>
+                                <label style="display:block;"><input type="checkbox" value="Ph.D"> Ph.D</label>
+                            </div>
                         </div>
                     </div>
 
+
                     <div class="form-row">
                         <div class="form-group">
-                            <label for="year">Academic Year*</label>
-                            <input type="number" id="year" class="form-control" min="2000" max="2099" required>
+                            <label for="year">Academic Year</label>
+                            <input type="number" id="year" class="form-control" min="2000" max="2099">
                         </div>
                         <div class="form-group">
                             <label for="category">Category</label>
@@ -645,11 +731,11 @@
                 <!-- Step 3: Upload Files -->
                 <form id="uploadFilesForm" class="form-step">
                     <div class="form-group">
-                        <label>College Logo/Profile Photo*</label>
+                        <label>College Logo/Profile Photo</label>
                         <div class="file-upload" id="profileUpload">
                             <i class="fas fa-cloud-upload-alt"></i>
                             <p>Click to upload profile photo</p>
-                            <input type="file" id="profilePhoto" accept="image/*">
+                            <input type="file" id="profilePhoto" accept="image/*" required>
                         </div>
                         <div class="file-preview" id="profilePreview"></div>
                     </div>
@@ -659,7 +745,7 @@
                         <div class="file-upload" id="imagesUpload">
                             <i class="fas fa-cloud-upload-alt"></i>
                             <p>Click to upload multiple images</p>
-                            <input type="file" id="collegeImages" accept="image/*" multiple>
+                            <input type="file" id="collegeImages" accept="image/*" multiple required>
                         </div>
                         <div class="file-preview" id="imagesPreview"></div>
                     </div>
@@ -669,7 +755,7 @@
                         <div class="file-upload" id="brochureUpload">
                             <i class="fas fa-cloud-upload-alt"></i>
                             <p>Click to upload brochure (image)</p>
-                            <input type="file" id="brochure" accept="image/*">
+                            <input type="file" id="brochure" accept="image/*" required>
                         </div>
                         <div class="file-preview" id="brochurePreview"></div>
                     </div>
@@ -753,6 +839,16 @@
                     'averagePackage': college.averagePackage,
                     'topRecruiters': college.topRecruiters
                 };
+
+                // Handle course checkboxes
+                if (college.courses) {
+                    const courses = college.course.split(',');
+                    const checkboxes = document.querySelectorAll('#courseFields input[type="checkbox"]');
+                    checkboxes.forEach(checkbox => {
+                        checkbox.checked = courses.includes(checkbox.value);
+                    });
+                    console.log('Course checkboxes set:', courses);
+                }
 
                 // Fill text inputs
                 Object.entries(textFields).forEach(([id, value]) => {
@@ -1114,7 +1210,7 @@
                         googleMapsLink: getValue('googleMapsLink'),
                         address: getValue('address'),
                         name: getValue('name'),
-                        level: getValue('level'),
+                        level: Array.from(document.querySelectorAll('#levelOptions input[type="checkbox"]:checked')).map(cb => cb.value).join(','),
                         specialization: getValue('specialization'),
                         totalSeats: getNumber('totalSeats') || 0,
                         lateralEntryAvailable: getChecked('lateralEntryAvailable'),
@@ -1131,7 +1227,10 @@
                         averagePackage: getNumber('averagePackage'),
                         topRecruiters: getValue('topRecruiters'),
                         category: getValue('category'),
-                        seatsAvailable: getNumber('seatsAvailable')
+                        seatsAvailable: getNumber('seatsAvailable'),
+                        courses: Array.from(document.querySelectorAll('#courseFields input[type="checkbox"]:checked'))
+                            .map(cb => cb.value)
+                            .join(',')
                     };
 
                     console.log('Submitting college details:', data);
@@ -1184,6 +1283,19 @@
             document.getElementById('submitBtn').addEventListener('click', async function () {
                 this.disabled = true;
                 console.log(`Submit button clicked. Edit mode: ${isEditMode}`);
+
+
+
+                // 🔒 Mandatory field check
+                const profilePhoto = document.getElementById('profilePhoto').files[0];
+                const collegeImages = document.getElementById('collegeImages').files;
+                const brochure = document.getElementById('brochure').files[0];
+
+                if (!profilePhoto || !collegeImages.length || !brochure) {
+                    alert('Please upload all required files: Profile Photo, College Images, and Brochure.');
+                    this.disabled = false;
+                    return;
+                }
 
                 try {
 
